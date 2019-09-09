@@ -7,7 +7,8 @@ export const AppContext = React.createContext({
     page: null,
     setPage: () => { },
     confirmFavorites: () => { },
-    firstVisit: false
+    firstVisit: false,
+    coinList: null
 });
 
 const AppProvider = props => {
@@ -50,7 +51,8 @@ const AppProvider = props => {
             page: pageState,
             setPage: setPage,
             firstVisit: visitState,
-            confirmFavorites: confirmFavorites
+            confirmFavorites: confirmFavorites,
+            coinList: coinList
         }}>
             {props.children}
         </AppContext.Provider>
