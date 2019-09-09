@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled, { css } from 'styled-components';
+
+import { AppContext } from './AppProvider';
 
 const Bar = styled.div`
     display: grid;
@@ -19,8 +21,11 @@ const ControlButtonEle = styled.div`
 `;
 
 export const ControlButton = props => {
+    const pageContext = useContext(AppContext);
     return (
-        <ControlButtonEle active={props.active}>
+        <ControlButtonEle
+            active={props.name === pageContext.page}
+            onClick={() => pageContext.setPage(props.name)}>
             {toProperCase(props.name)}
         </ControlButtonEle>
     )
@@ -36,7 +41,7 @@ const AppBar = props => {
         <Bar>
             <Logo>CrytoDash</Logo>
             <div />
-            <ControlButton active name={"dashboard"} />
+            <ControlButton name={"dashboard"} />
             <ControlButton name={"settings"} />
         </Bar>
     );
