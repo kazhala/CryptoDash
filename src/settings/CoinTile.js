@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { AppContext } from '../App/AppProvider';
-import { SelectableTile, DeletableTile, DisabledTile } from '../shared/Tile';
+import { SelectableTile, DeletableTile, DisabledTile } from '../Shared/Tile';
 import CoinHeaderGrid from './CoinHeaderGrid';
-import CoinImage from '../shared/CoinImage';
+import CoinImage from '../Shared/CoinImage';
 
 const CoinTile = props => {
     const coinContext = useContext(AppContext);

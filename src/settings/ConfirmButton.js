@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
 
-import { fontSize1, greenBoxShadow, color3 } from '../shared/Styles';
+import { fontSize1, greenBoxShadow, color3 } from '../Shared/Styles';
 import { AppContext } from '../App/AppProvider';
 
 const ConfirmButtonStyled = styled.div`

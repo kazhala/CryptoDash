@@ -2,11 +2,12 @@ import React from 'react';
 
 import './App.css';
 import AppLayout from './AppLayout';
-import Settings from '../settings/index';
+import Settings from '../Settings/index';
 import AppBar from './AppBar';
 import AppProvider from './AppProvider';
-import Page from '../shared/Page';
-import Content from '../shared/Content';
+import Page from '../Shared/Page';
+import Content from '../Shared/Content';
+import DashBoard from '../DashBoard/index';
 
 function App() {
   return (
@@ -15,7 +16,7 @@ function App() {
         <AppBar />
         <Content>
           <Page name={'settings'}><Settings /></Page>
-
+          <Page name={'dashboard'}><DashBoard /></Page>
         </Content>
       </AppLayout>
     </AppProvider>

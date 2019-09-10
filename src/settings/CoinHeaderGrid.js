@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { DeletableTile } from '../shared/Tile';
+import { DeletableTile } from '../Shared/Tile';
 
 
 export const CoinGridStyled = styled.div`
