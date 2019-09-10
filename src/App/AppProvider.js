@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import _ from 'lodash';
 
 const cc = require('cryptocompare');
 
+const MAX_FAVORITES = 10;
 
 export const AppContext = React.createContext({
     page: null,
     setPage: () => { },
     confirmFavorites: () => { },
     firstVisit: false,
-    coinList: null
+    coinList: null,
+    favoriteCoinList: ['BTC', 'ETC', 'XMR', 'DOGE'],
+    addCoin: () => { },
+    removeCoin: () => { },
+    isInFavorites: () => { }
 });
 
 const AppProvider = props => {
@@ -16,6 +22,7 @@ const AppProvider = props => {
     //fist time vist state 
     const [visitState, setVisitState] = useState(false);
     const [coinList, setCoinList] = useState(null);
+    const [favList, setFavList] = useState(['BTC', 'ETC', 'XMR', 'DOGE']);
 
     useEffect(() => {
         console.log('effected');
@@ -23,7 +30,9 @@ const AppProvider = props => {
         if (!cryptoDashData) {
             setPageState('settings');
             setVisitState(true);
-        };
+        } else if (cryptoDashData) {
+            setFavList(cryptoDashData.favorites);
+        }
         fetchCoins();
     }, []);
 
@@ -37,13 +46,31 @@ const AppProvider = props => {
         setPageState(page);
     }
 
+    const addCoin = key => {
+        let newList = [...favList];
+        if (newList.length < MAX_FAVORITES) {
+            newList.push(key);
+            setFavList(newList);
+        }
+    }
+
+    const removeCoin = key => {
+        let newList = [...favList];
+        _.pull(newList, key);
+        setFavList(newList);
+    }
+
     const confirmFavorites = () => {
         console.log('hello');
         setVisitState(false);
         setPageState('dashboard');
         localStorage.setItem('cryptoDash', JSON.stringify({
-            test: 'hello'
+            favorites: favList
         }));
+    }
+
+    const isInFavorites = key => {
+        return _.includes(favList, key);
     }
 
     return (
@@ -52,7 +79,11 @@ const AppProvider = props => {
             setPage: setPage,
             firstVisit: visitState,
             confirmFavorites: confirmFavorites,
-            coinList: coinList
+            coinList: coinList,
+            favoriteCoinList: favList,
+            addCoin: addCoin,
+            removeCoin: removeCoin,
+            isInFavorites: isInFavorites
         }}>
             {props.children}
         </AppContext.Provider>
