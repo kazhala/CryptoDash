@@ -10,9 +10,16 @@ export const CoinGridStyled = styled.div`
     margin-top: 40px;
 `
 
-export const getCoinsToDisplay = (coinList, topSection, favorites) => {
+export const getLowerSectionCoins = (coinList, filteredCoins) => {
     return (
-        topSection ? favorites : Object.keys(coinList).slice(0, 100)
+        (filteredCoins && Object.keys(filteredCoins).slice(0, 100)) ||
+        Object.keys(coinList).slice(0, 100)
+    );
+}
+
+export const getCoinsToDisplay = (coinList, topSection, favorites, filteredCoins) => {
+    return (
+        topSection ? favorites : getLowerSectionCoins(coinList, filteredCoins)
     );
 }
 
@@ -20,7 +27,7 @@ const CoinGrid = props => {
     const coinContext = useContext(AppContext);
     return (
         <CoinGridStyled>
-            {getCoinsToDisplay(coinContext.coinList, props.topSection, coinContext.favoriteCoinList).map(coinKey => {
+            {getCoinsToDisplay(coinContext.coinList, props.topSection, coinContext.favoriteCoinList, coinContext.filteredCoins).map(coinKey => {
                 return <CoinTile key={coinKey} topSection={props.topSection} coinKey={coinKey} />
             })}
         </CoinGridStyled>

@@ -14,7 +14,9 @@ export const AppContext = React.createContext({
     favoriteCoinList: ['BTC', 'ETC', 'XMR', 'DOGE'],
     addCoin: () => { },
     removeCoin: () => { },
-    isInFavorites: () => { }
+    isInFavorites: () => { },
+    filteredCoins: null,
+    searchCoins: () => { }
 });
 
 const AppProvider = props => {
@@ -23,6 +25,7 @@ const AppProvider = props => {
     const [visitState, setVisitState] = useState(false);
     const [coinList, setCoinList] = useState(null);
     const [favList, setFavList] = useState(['BTC', 'ETC', 'XMR', 'DOGE']);
+    const [filteredCoins, setFilteredCoins] = useState(null);
 
     useEffect(() => {
         console.log('effected');
@@ -73,6 +76,10 @@ const AppProvider = props => {
         return _.includes(favList, key);
     }
 
+    const searchCoins = filteredCoins => {
+        setFilteredCoins(filteredCoins);
+    }
+
     return (
         <AppContext.Provider value={{
             page: pageState,
@@ -83,7 +90,9 @@ const AppProvider = props => {
             favoriteCoinList: favList,
             addCoin: addCoin,
             removeCoin: removeCoin,
-            isInFavorites: isInFavorites
+            isInFavorites: isInFavorites,
+            filteredCoins: filteredCoins,
+            searchCoins: searchCoins,
         }}>
             {props.children}
         </AppContext.Provider>
