@@ -7,6 +7,7 @@ const Settings = props => {
     return (
         <div>
             <WelcomeMessage />
+            <CoinGrid topSection />
             <ConfirmButton />
             <CoinGrid />
         </div>
