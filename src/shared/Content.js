@@ -8,6 +8,9 @@ const Content = props => {
     if (appContext.coinList) {
         content = <div>{props.children}</div>;
     }
+    if (!appContext.firstVisit && !appContext.pricesState) {
+        content = <div><Spinner /></div>
+    }
     return (
         <div>
             {content}

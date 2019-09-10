@@ -16,7 +16,8 @@ export const AppContext = React.createContext({
     removeCoin: () => { },
     isInFavorites: () => { },
     filteredCoins: null,
-    searchCoins: () => { }
+    searchCoins: () => { },
+    pricesState: null,
 });
 
 const AppProvider = props => {
@@ -26,6 +27,7 @@ const AppProvider = props => {
     const [coinList, setCoinList] = useState(null);
     const [favList, setFavList] = useState(['BTC', 'ETC', 'XMR', 'DOGE']);
     const [filteredCoins, setFilteredCoins] = useState(null);
+    const [pricesState, setPrices] = useState(null);
 
     useEffect(() => {
         console.log('effected');
@@ -37,12 +39,49 @@ const AppProvider = props => {
             setFavList(cryptoDashData.favorites);
         }
         fetchCoins();
+        //fetchPrices();
     }, []);
+
+    useEffect(() => {
+        if (coinList) {
+            fetchPrices();
+        }
+        // eslint-disable-next-line
+    }, [coinList]);
+
+    useEffect(() => {
+        if (coinList) {
+            fetchPrices();
+        }
+        // eslint-disable-next-line
+    }, [visitState]);
+
 
     const fetchCoins = async () => {
         let coinList = (await cc.coinList()).Data;
         console.log(coinList);
         setCoinList(coinList);
+    }
+
+    const fetchPrices = async () => {
+        if (visitState) return;
+        let prices = await pricesData();
+        prices = prices.filter(price => Object.keys(price).length);
+        console.log(prices);
+        setPrices(prices);
+    }
+
+    const pricesData = async () => {
+        let returnData = [];
+        for (let i = 0; i < favList.length; i++) {
+            try {
+                let priceData = await cc.priceFull(favList[i], 'USD');
+                returnData.push(priceData);
+            } catch (error) {
+                console.warn('Fetch price error: ', error);
+            }
+        }
+        return returnData;
     }
 
     const setPage = page => {
@@ -70,6 +109,7 @@ const AppProvider = props => {
         localStorage.setItem('cryptoDash', JSON.stringify({
             favorites: favList
         }));
+        fetchPrices();
     }
 
     const isInFavorites = key => {
@@ -93,6 +133,7 @@ const AppProvider = props => {
             isInFavorites: isInFavorites,
             filteredCoins: filteredCoins,
             searchCoins: searchCoins,
+            pricesState: pricesState
         }}>
             {props.children}
         </AppContext.Provider>

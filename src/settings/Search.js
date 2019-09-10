@@ -50,7 +50,7 @@ const filterCoins = (e, searchInput, coinList) => {
 
 const Search = props => {
     const searchContext = useContext(AppContext);
-    console.log(searchContext.filteredCoins);
+    //console.log(searchContext.filteredCoins);
     return (
         <SearchGrid>
             <h2>Search all coins</h2>
