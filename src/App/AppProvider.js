@@ -3,6 +3,7 @@ import _ from 'lodash';
 import moment from 'moment';
 
 const cc = require('cryptocompare');
+//cc.setApiKey('e12b0c000029b3ed3ce08e55da9887084952104107a4f79d242aca578346f5e2');
 
 const MAX_FAVORITES = 10;
 const TIME_UNITS = 10;
@@ -23,6 +24,7 @@ export const AppContext = React.createContext({
     currentFavorite: null,
     setFavorite: () => { },
     historicalChartData: null,
+    changeChartSelect: () => { }
 });
 
 const AppProvider = props => {
@@ -35,6 +37,7 @@ const AppProvider = props => {
     const [pricesState, setPrices] = useState(null);
     const [currentFavorite, setCurrentFavorite] = useState(null);
     const [historicalChartData, setHistoricalChartData] = useState(null);
+    const [timeInterval, setTimeInterval] = useState(null);
 
     useEffect(() => {
         console.log('effected');
@@ -45,6 +48,7 @@ const AppProvider = props => {
         } else if (cryptoDashData) {
             setFavList(cryptoDashData.favorites);
             setCurrentFavorite(cryptoDashData.currFav);
+            setTimeInterval('months');
         }
         fetchCoins();
     }, []);
@@ -71,6 +75,13 @@ const AppProvider = props => {
         // eslint-disable-next-line 
     }, [currentFavorite])
 
+    useEffect(() => {
+        if (timeInterval) {
+            fetchHistorical();
+        }
+        // eslint-disable-next-line  
+    }, [timeInterval])
+
     const fetchHistorical = async () => {
         if (visitState) return;
         let results = await historicalData();
@@ -79,7 +90,7 @@ const AppProvider = props => {
             {
                 name: currentFavorite,
                 data: results.map((ticker, index) => [
-                    moment().subtract({ months: TIME_UNITS - index }).valueOf(),
+                    moment().subtract({ [timeInterval]: TIME_UNITS - index }).valueOf(),
                     ticker.USD
                 ])
             }
@@ -92,7 +103,7 @@ const AppProvider = props => {
         let promises = [];
         for (let units = TIME_UNITS; units > 0; units--) {
             promises.push(
-                cc.priceHistorical(currentFavorite, ['USD'], moment().subtract({ month: units }).toDate())
+                cc.priceHistorical(currentFavorite, ['USD'], moment().subtract({ [timeInterval]: units }).toDate())
             )
         }
         return Promise.all(promises);
@@ -152,6 +163,12 @@ const AppProvider = props => {
         setFavList(newList);
     }
 
+    const changeChartSelect = value => {
+        //console.log(value);
+        setTimeInterval(value);
+        setHistoricalChartData(null);
+    }
+
     const confirmFavorites = () => {
         let currFav = favList[0];
         setCurrentFavorite(currFav);
@@ -190,7 +207,8 @@ const AppProvider = props => {
             pricesState: pricesState,
             currentFavorite: currentFavorite,
             setFavorite: setFavorite,
-            historicalChartData: historicalChartData
+            historicalChartData: historicalChartData,
+            changeChartSelect: changeChartSelect
         }}>
             {props.children}
         </AppContext.Provider>
