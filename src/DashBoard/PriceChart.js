@@ -24,7 +24,7 @@ const PriceChart = props => {
             </ChartSelect>
             {priceContext.historicalChartData ?
                 <ReactHighCharts config={HighChartsConfig(priceContext.historicalChartData)} /> :
-                <Spinner />
+                <Spinner chart />
             }
 
         </Tile>

@@ -1,9 +1,10 @@
 import React from 'react';
 import classes from './Spinner.module.css';
+import chart from './ChartSpinner.module.css';
 
 const spinner = props => {
     return (
-        <div className={classes.loader}>Loading...</div>
+        <div className={props.chart ? chart.loader : classes.loader}>Loading...</div>
     );
 }
 

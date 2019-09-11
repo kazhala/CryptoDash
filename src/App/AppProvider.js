@@ -56,31 +56,35 @@ const AppProvider = props => {
     useEffect(() => {
         if (coinList) {
             fetchPrices();
-            fetchHistorical();
+            //fetchHistorical();
         }
         // eslint-disable-next-line
-    }, [coinList]);
+    }, [coinList, visitState]);
 
+    /*
     useEffect(() => {
         if (coinList) {
             fetchPrices();
         }
         // eslint-disable-next-line
     }, [visitState]);
+    */
 
     useEffect(() => {
         if (currentFavorite) {
             fetchHistorical();
         }
         // eslint-disable-next-line 
-    }, [currentFavorite])
+    }, [currentFavorite, timeInterval])
 
+    /*
     useEffect(() => {
         if (timeInterval) {
             fetchHistorical();
         }
         // eslint-disable-next-line  
     }, [timeInterval])
+    */
 
     const fetchHistorical = async () => {
         if (visitState) return;
