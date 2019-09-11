@@ -37,7 +37,7 @@ const AppProvider = props => {
     const [pricesState, setPrices] = useState(null);
     const [currentFavorite, setCurrentFavorite] = useState(null);
     const [historicalChartData, setHistoricalChartData] = useState(null);
-    const [timeInterval, setTimeInterval] = useState(null);
+    const [timeInterval, setTimeInterval] = useState('months');
 
     useEffect(() => {
         //console.log('effected');
@@ -48,7 +48,7 @@ const AppProvider = props => {
         } else if (cryptoDashData) {
             setFavList(cryptoDashData.favorites);
             setCurrentFavorite(cryptoDashData.currFav);
-            setTimeInterval('months');
+            //setTimeInterval('months');
         }
         fetchCoins();
     }, []);
@@ -174,6 +174,9 @@ const AppProvider = props => {
     }
 
     const confirmFavorites = () => {
+        if (favList.length === 0) {
+            return;
+        }
         let currFav = favList[0];
         setCurrentFavorite(currFav);
         //console.log('hello');

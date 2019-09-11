@@ -12,6 +12,7 @@ ReactHighCharts.Highcharts.setOptions(HighChartsTheme);
 const PriceChart = props => {
     const priceContext = useContext(AppContext);
 
+
     return (
         <Tile>
             <ChartSelect
