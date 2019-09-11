@@ -1,10 +1,20 @@
 import React from 'react';
+import styled, { css } from 'styled-components';
+
+const StyledCoinImage = styled.img`
+    height: 50px;
+    ${props => props.spotlight && css`
+        height: 200px;
+        margin: auto;
+        display: block;
+    `}
+`
 
 const CoinImage = props => {
     return (
-        <img
+        <StyledCoinImage
+            spotlight={props.spotlight}
             alt={props.coin.Symbol}
-            style={props.style || { height: '50px' }}
             src={`http://cryptocompare.com/${props.coin.ImageUrl}`}
         />
     );
