@@ -18,6 +18,9 @@ const ControlButtonEle = styled.div`
     ${ props => props.active && css`
         text-shadow: 0px 0px 60px #03ff03
     `}
+    ${props => props.hidden && css`
+        display: none;
+    `}
 `;
 
 export const ControlButton = props => {
@@ -25,7 +28,9 @@ export const ControlButton = props => {
     return (
         <ControlButtonEle
             active={props.name === pageContext.page}
-            onClick={() => pageContext.setPage(props.name)}>
+            onClick={() => pageContext.setPage(props.name)}
+            hidden={pageContext.firstVisit && props.name === 'dashboard'}
+        >
             {toProperCase(props.name)}
         </ControlButtonEle>
     )
