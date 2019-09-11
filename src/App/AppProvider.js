@@ -3,7 +3,7 @@ import _ from 'lodash';
 import moment from 'moment';
 
 const cc = require('cryptocompare');
-//cc.setApiKey('e12b0c000029b3ed3ce08e55da9887084952104107a4f79d242aca578346f5e2');
+cc.setApiKey('e12b0c000029b3ed3ce08e55da9887084952104107a4f79d242aca578346f5e2');
 
 const MAX_FAVORITES = 10;
 const TIME_UNITS = 10;
@@ -40,7 +40,7 @@ const AppProvider = props => {
     const [timeInterval, setTimeInterval] = useState(null);
 
     useEffect(() => {
-        console.log('effected');
+        //console.log('effected');
         let cryptoDashData = JSON.parse(localStorage.getItem('cryptoDash'));
         if (!cryptoDashData) {
             setPageState('settings');
@@ -99,7 +99,7 @@ const AppProvider = props => {
                 ])
             }
         ];
-        console.log(historical);
+        //console.log(historical);
         setHistoricalChartData(historical);
     }
 
@@ -115,7 +115,7 @@ const AppProvider = props => {
 
     const fetchCoins = async () => {
         let coinList = (await cc.coinList()).Data;
-        console.log(coinList);
+        //console.log(coinList);
         setCoinList(coinList);
     }
 
@@ -123,7 +123,7 @@ const AppProvider = props => {
         if (visitState) return;
         let prices = await pricesData();
         prices = prices.filter(price => Object.keys(price).length);
-        console.log(prices);
+        //console.log(prices);
         setPrices(prices);
     }
 
@@ -176,7 +176,7 @@ const AppProvider = props => {
     const confirmFavorites = () => {
         let currFav = favList[0];
         setCurrentFavorite(currFav);
-        console.log('hello');
+        //console.log('hello');
         setVisitState(false);
         setPageState('dashboard');
         localStorage.setItem('cryptoDash', JSON.stringify({
