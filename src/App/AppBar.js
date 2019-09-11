@@ -44,7 +44,7 @@ const AppBar = props => {
 
     return (
         <Bar>
-            <Logo>CrytoDash</Logo>
+            <Logo>CryptoKAZ</Logo>
             <div />
             <ControlButton name={"dashboard"} />
             <ControlButton name={"settings"} />
