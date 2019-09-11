@@ -4,6 +4,7 @@ import { Tile } from '../Shared/Tile';
 import { AppContext } from '../App/AppProvider';
 import ReactHighCharts from 'react-highcharts';
 import HighChartsTheme from './HighChartsTheme';
+import Spinner from '../Shared/Spinner/Spinner';
 
 ReactHighCharts.Highcharts.setOptions(HighChartsTheme);
 
@@ -12,7 +13,11 @@ const PriceChart = props => {
 
     return (
         <Tile>
-            <ReactHighCharts config={HighChartsConfig()} />
+            {priceContext.historicalChartData ?
+                <ReactHighCharts config={HighChartsConfig(priceContext.historicalChartData)} /> :
+                <Spinner />
+            }
+
         </Tile>
     );
 }

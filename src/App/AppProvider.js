@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
+import moment from 'moment';
 
 const cc = require('cryptocompare');
 
 const MAX_FAVORITES = 10;
+const TIME_UNITS = 10;
 
 export const AppContext = React.createContext({
     page: null,
@@ -19,7 +21,8 @@ export const AppContext = React.createContext({
     searchCoins: () => { },
     pricesState: null,
     currentFavorite: null,
-    setFavorite: () => { }
+    setFavorite: () => { },
+    historicalChartData: null,
 });
 
 const AppProvider = props => {
@@ -31,6 +34,7 @@ const AppProvider = props => {
     const [filteredCoins, setFilteredCoins] = useState(null);
     const [pricesState, setPrices] = useState(null);
     const [currentFavorite, setCurrentFavorite] = useState(null);
+    const [historicalChartData, setHistoricalChartData] = useState(null);
 
     useEffect(() => {
         console.log('effected');
@@ -48,6 +52,7 @@ const AppProvider = props => {
     useEffect(() => {
         if (coinList) {
             fetchPrices();
+            fetchHistorical();
         }
         // eslint-disable-next-line
     }, [coinList]);
@@ -59,6 +64,39 @@ const AppProvider = props => {
         // eslint-disable-next-line
     }, [visitState]);
 
+    useEffect(() => {
+        if (currentFavorite) {
+            fetchHistorical();
+        }
+        // eslint-disable-next-line 
+    }, [currentFavorite])
+
+    const fetchHistorical = async () => {
+        if (visitState) return;
+        let results = await historicalData();
+        //console.log(results);
+        let historical = [
+            {
+                name: currentFavorite,
+                data: results.map((ticker, index) => [
+                    moment().subtract({ months: TIME_UNITS - index }).valueOf(),
+                    ticker.USD
+                ])
+            }
+        ];
+        console.log(historical);
+        setHistoricalChartData(historical);
+    }
+
+    const historicalData = () => {
+        let promises = [];
+        for (let units = TIME_UNITS; units > 0; units--) {
+            promises.push(
+                cc.priceHistorical(currentFavorite, ['USD'], moment().subtract({ month: units }).toDate())
+            )
+        }
+        return Promise.all(promises);
+    }
 
     const fetchCoins = async () => {
         let coinList = (await cc.coinList()).Data;
@@ -76,10 +114,11 @@ const AppProvider = props => {
 
     const setFavorite = sym => {
         setCurrentFavorite(sym);
+        setHistoricalChartData(null);
         localStorage.setItem('cryptoDash', JSON.stringify({
             ...JSON.parse(localStorage.getItem('cryptoDash')),
             currFav: sym,
-        }))
+        }));
     }
 
     const pricesData = async () => {
@@ -123,6 +162,7 @@ const AppProvider = props => {
             favorites: favList,
             currFav: currFav,
         }));
+        setPrices(null);
         fetchPrices();
     }
 
@@ -149,7 +189,8 @@ const AppProvider = props => {
             searchCoins: searchCoins,
             pricesState: pricesState,
             currentFavorite: currentFavorite,
-            setFavorite: setFavorite
+            setFavorite: setFavorite,
+            historicalChartData: historicalChartData
         }}>
             {props.children}
         </AppContext.Provider>
