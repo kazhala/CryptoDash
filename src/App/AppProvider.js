@@ -18,6 +18,8 @@ export const AppContext = React.createContext({
     filteredCoins: null,
     searchCoins: () => { },
     pricesState: null,
+    currentFavorite: null,
+    setFavorite: () => { }
 });
 
 const AppProvider = props => {
@@ -28,6 +30,7 @@ const AppProvider = props => {
     const [favList, setFavList] = useState(['BTC', 'ETC', 'XMR', 'DOGE']);
     const [filteredCoins, setFilteredCoins] = useState(null);
     const [pricesState, setPrices] = useState(null);
+    const [currentFavorite, setCurrentFavorite] = useState(null);
 
     useEffect(() => {
         console.log('effected');
@@ -37,9 +40,9 @@ const AppProvider = props => {
             setVisitState(true);
         } else if (cryptoDashData) {
             setFavList(cryptoDashData.favorites);
+            setCurrentFavorite(cryptoDashData.currFav);
         }
         fetchCoins();
-        //fetchPrices();
     }, []);
 
     useEffect(() => {
@@ -69,6 +72,14 @@ const AppProvider = props => {
         prices = prices.filter(price => Object.keys(price).length);
         console.log(prices);
         setPrices(prices);
+    }
+
+    const setFavorite = sym => {
+        setCurrentFavorite(sym);
+        localStorage.setItem('cryptoDash', JSON.stringify({
+            ...JSON.parse(localStorage.getItem('cryptoDash')),
+            currFav: sym,
+        }))
     }
 
     const pricesData = async () => {
@@ -103,11 +114,14 @@ const AppProvider = props => {
     }
 
     const confirmFavorites = () => {
+        let currFav = favList[0];
+        setCurrentFavorite(currFav);
         console.log('hello');
         setVisitState(false);
         setPageState('dashboard');
         localStorage.setItem('cryptoDash', JSON.stringify({
-            favorites: favList
+            favorites: favList,
+            currFav: currFav,
         }));
         fetchPrices();
     }
@@ -133,7 +147,9 @@ const AppProvider = props => {
             isInFavorites: isInFavorites,
             filteredCoins: filteredCoins,
             searchCoins: searchCoins,
-            pricesState: pricesState
+            pricesState: pricesState,
+            currentFavorite: currentFavorite,
+            setFavorite: setFavorite
         }}>
             {props.children}
         </AppContext.Provider>

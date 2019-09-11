@@ -16,7 +16,7 @@ const PriceGrid = props => {
     return (
         <GridPrice>
             {priceContext.pricesState.map((price, index) => {
-                return <PriceTile price={price} index={index} />
+                return <PriceTile key={index} price={price} index={index} />
             })}
         </GridPrice>
     );

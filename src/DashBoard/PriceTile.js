@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled, { css } from 'styled-components';
 
 import { SelectableTile } from '../Shared/Tile';
-import { fontSize3, fontSizeBig } from '../Shared/Styles';
+import { fontSize3, fontSizeBig, greenBoxShadow } from '../Shared/Styles';
 import { CoinGridStyled } from '../Settings/CoinHeaderGrid';
+import { AppContext } from '../App/AppProvider';
 
 const JustifyRight = styled.div`
     justify-self: right;
@@ -35,6 +36,11 @@ const PriceTileStyled = styled(SelectableTile)`
         grid-template-columns: repeat(3, 1fr);
         justify-items: right;
     `}
+
+    ${props => props.currentFavorite && css`
+        ${greenBoxShadow}
+        pointer-events: none;
+    `}
 `
 
 const ChangePercent = props => {
@@ -50,7 +56,7 @@ const ChangePercent = props => {
 
 const TilePriceCompact = props => {
     return (
-        <PriceTileStyled compact>
+        <PriceTileStyled compact currentFavorite={props.currentFavorite} onClick={props.setCurrentFavorite}>
             <JustifyLeft> {props.syms} </JustifyLeft>
             <ChangePercent data={props.data} />
             <div>
@@ -62,7 +68,7 @@ const TilePriceCompact = props => {
 
 const TilePrice = props => {
     return (
-        <PriceTileStyled>
+        <PriceTileStyled currentFavorite={props.currentFavorite} onClick={props.setCurrentFavorite}>
             <CoinGridStyled>
                 <div> {props.syms} </div>
                 <ChangePercent data={props.data} />
@@ -75,12 +81,17 @@ const TilePrice = props => {
 }
 
 const PriceTile = props => {
-
+    const favContext = useContext(AppContext);
     const symbol = Object.keys(props.price)[0];
     const data = props.price[symbol]['USD'];
     const TileClass = props.index < 5 ? TilePrice : TilePriceCompact;
     return (
-        <TileClass syms={symbol} data={data} />
+        <TileClass
+            syms={symbol}
+            data={data}
+            currentFavorite={favContext.currentFavorite === symbol}
+            setCurrentFavorite={() => favContext.setFavorite(symbol)}
+        />
     );
 }
 
