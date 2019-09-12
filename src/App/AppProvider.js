@@ -3,11 +3,18 @@ import _ from 'lodash';
 import moment from 'moment';
 
 const cc = require('cryptocompare');
-cc.setApiKey('e12b0c000029b3ed3ce08e55da9887084952104107a4f79d242aca578346f5e2');
+//cc.setApiKey('e12b0c000029b3ed3ce08e55da9887084952104107a4f79d242aca578346f5e2');
+//commented out apikey because I don't want unnecessary calls to server during development
+//If you cloned this, uncomment the apiKey
 
+//Set predefined numbers, easier to change if later want to modify
 const MAX_FAVORITES = 10;
+//Determines how many data it should get, e.g. 10 means get latest 10 months/weeks/days data
 const TIME_UNITS = 10;
 
+//predefine the available value in the context
+//It would be overwritten in the app provider, 
+//however, it provides you some code snippets when calling the context
 export const AppContext = React.createContext({
     page: null,
     setPage: () => { },
@@ -28,23 +35,34 @@ export const AppContext = React.createContext({
 });
 
 const AppProvider = props => {
+    //determines which page to display
     const [pageState, setPageState] = useState('dashboard');
     //fist time vist state 
     const [visitState, setVisitState] = useState(false);
+    //stores the coinlist and used to check if fetchprice() should execute
     const [coinList, setCoinList] = useState(null);
+    //default 4 favorite coins for new users (they are pretty popular coins)
     const [favList, setFavList] = useState(['BTC', 'ETC', 'XMR', 'DOGE']);
+    //Used to configure fuzzy search
     const [filteredCoins, setFilteredCoins] = useState(null);
+    //stores the fetched price
     const [pricesState, setPrices] = useState(null);
+    //stores the current displaying coin
     const [currentFavorite, setCurrentFavorite] = useState(null);
+    //stores the chart data used for dislaying chart
     const [historicalChartData, setHistoricalChartData] = useState(null);
+    //stores the time interval to display chart, months/weeks/days
     const [timeInterval, setTimeInterval] = useState('months');
 
+    //acts as componentdidmount, no dependency, so only execute once when mounted
     useEffect(() => {
-        //console.log('effected');
+        //check if local storage containes cookies
         let cryptoDashData = JSON.parse(localStorage.getItem('cryptoDash'));
+        //if no data in local storage, set user as first time user and display welcome message
         if (!cryptoDashData) {
             setPageState('settings');
             setVisitState(true);
+            //if data in local storage, read and set the data
         } else if (cryptoDashData) {
             setFavList(cryptoDashData.favorites);
             setCurrentFavorite(cryptoDashData.currFav);
@@ -53,6 +71,10 @@ const AppProvider = props => {
         fetchCoins();
     }, []);
 
+    //fetchPrice would fetch prices for the coins in the favorite list
+    //but favorte list have not been updated yet when component mounted
+    //if called in the previous useEffect, it would only render predefined 4 favorite list
+    //TLDR: below useEffect would be executed when previouse useEffect is finished executing
     useEffect(() => {
         if (coinList) {
             fetchPrices();
@@ -70,6 +92,9 @@ const AppProvider = props => {
     }, [visitState]);
     */
 
+    //Same as the above useEffect, fetchHistorical() needs currentFavorite to be set
+    //When mounted, currentFavorite has not been set yet
+    //This would be executed when currentFavortie is being set or when user change the timeInterval
     useEffect(() => {
         if (currentFavorite) {
             fetchHistorical();
@@ -86,13 +111,16 @@ const AppProvider = props => {
     }, [timeInterval])
     */
 
+    //Asynconously fetch the historical data and then stores the data for chart
     const fetchHistorical = async () => {
         if (visitState) return;
         let results = await historicalData();
         //console.log(results);
         let historical = [
             {
+                //the line name in the graph
                 name: currentFavorite,
+                //the x and y axis on the graph
                 data: results.map((ticker, index) => [
                     moment().subtract({ [timeInterval]: TIME_UNITS - index }).valueOf(),
                     ticker.USD
@@ -103,6 +131,8 @@ const AppProvider = props => {
         setHistoricalChartData(historical);
     }
 
+    //Loop through the time interval and call the api
+    //e.g. 10 months data, 9 months data, 8 months data.....
     const historicalData = () => {
         let promises = [];
         for (let units = TIME_UNITS; units > 0; units--) {
@@ -113,12 +143,14 @@ const AppProvider = props => {
         return Promise.all(promises);
     }
 
+    //fetch all coins and store in the state
     const fetchCoins = async () => {
         let coinList = (await cc.coinList()).Data;
         //console.log(coinList);
         setCoinList(coinList);
     }
 
+    //fetch the price, check if price data is available, store in the state
     const fetchPrices = async () => {
         if (visitState) return;
         let prices = await pricesData();
@@ -127,6 +159,9 @@ const AppProvider = props => {
         setPrices(prices);
     }
 
+    //click handler when user clicks "confirm favorites"
+    //set clear historical data to display spinner
+    //store the data in local storage immutably
     const setFavorite = sym => {
         setCurrentFavorite(sym);
         setHistoricalChartData(null);
@@ -136,6 +171,7 @@ const AppProvider = props => {
         }));
     }
 
+    //for each coins in the favorite list, fetch their price data
     const pricesData = async () => {
         let returnData = [];
         for (let i = 0; i < favList.length; i++) {
@@ -149,10 +185,12 @@ const AppProvider = props => {
         return returnData;
     }
 
+    //click handler when user clicks app bar
     const setPage = page => {
         setPageState(page);
     }
 
+    //click handler when user selects a key to add in to the favorite list
     const addCoin = key => {
         let newList = [...favList];
         if (newList.length < MAX_FAVORITES) {
@@ -161,18 +199,23 @@ const AppProvider = props => {
         }
     }
 
+    //click handler when user removes a coin from favorite list
+    //used lodash library to handle deletion
     const removeCoin = key => {
         let newList = [...favList];
         _.pull(newList, key);
         setFavList(newList);
     }
 
+    //when user selets a different time interval to display
     const changeChartSelect = value => {
         //console.log(value);
         setTimeInterval(value);
         setHistoricalChartData(null);
     }
 
+    //Handles user click confirm favorites
+    //if no favlist, return, otherwise would cause error when reading empty array
     const confirmFavorites = () => {
         if (favList.length === 0) {
             return;
@@ -190,6 +233,7 @@ const AppProvider = props => {
         fetchPrices();
     }
 
+    //used lodash library to check if it contains
     const isInFavorites = key => {
         return _.includes(favList, key);
     }

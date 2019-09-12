@@ -9,7 +9,9 @@ import ChartSelect from './ChartSelect';
 
 ReactHighCharts.Highcharts.setOptions(HighChartsTheme);
 
+//display the chart, using the library reacthighcharts as wrapper for charts
 const PriceChart = props => {
+    //Read data from context
     const priceContext = useContext(AppContext);
 
 

@@ -12,6 +12,9 @@ const ChartGrid = styled.div`
     grid-template-columns: 1fr 3fr;
 `
 
+//container for dash board
+//Coins to be selected on top
+//grpah below
 const DashBoard = props => {
     return (
         <div>

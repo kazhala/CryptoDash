@@ -3,16 +3,19 @@ import styled, { css } from 'styled-components';
 
 import { AppContext } from './AppProvider';
 
+//using styled-component to style the app bar
 const Bar = styled.div`
     display: grid;
     grid-template-columns: 180px auto 100px 100px;
     margin-bottom: 40px;
 `
 
+//set logo fontsize
 const Logo = styled.div`
     font-size: 1.5em;
 `;
 
+//check active props or hidden props and display accordingly
 const ControlButtonEle = styled.div`
     cursor: pointer;
     ${ props => props.active && css`
@@ -23,6 +26,7 @@ const ControlButtonEle = styled.div`
     `}
 `;
 
+//get the value from context provider, and pass the value to the controlbutton styled to display
 export const ControlButton = props => {
     const pageContext = useContext(AppContext);
     return (
@@ -36,10 +40,13 @@ export const ControlButton = props => {
     )
 }
 
+//change lower case to uppercase first letter, because I used lower case to check page display
+//but want to display as uppercase
 const toProperCase = lower => {
     return lower.charAt(0).toUpperCase() + lower.substr(1);
 }
 
+//Appbar layout
 const AppBar = props => {
 
     return (

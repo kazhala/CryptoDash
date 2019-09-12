@@ -9,6 +9,7 @@ const SpotlightName = styled.h2`
     text-align: center;
 `
 
+//display a big image and name for coin to the left of the chart
 const CoinSpotlight = props => {
     const coinContext = useContext(AppContext);
 

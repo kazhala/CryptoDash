@@ -11,6 +11,7 @@ const GridPrice = styled.div`
     margin-top: 40px;
 `
 
+//get the price array from context and map it out to display each Tile
 const PriceGrid = props => {
     const priceContext = useContext(AppContext);
     return (
