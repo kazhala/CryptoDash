@@ -19,6 +19,8 @@ const SearchInput = styled.input`
     place-self: center left;
 `
 
+//debounce setted so that application won't execute every time user type a character
+//execute this function when user stop typing for 500 ms
 const handleFilter = _.debounce((inputValue, coinList, searchFilter) => {
     //get all the coin symbols
     let coinSymbols = Object.keys(coinList);
@@ -26,11 +28,13 @@ const handleFilter = _.debounce((inputValue, coinList, searchFilter) => {
     let coinName = coinSymbols.map(symbol => coinList[symbol].CoinName);
     //combine the two coin property
     let allStringsSearch = coinSymbols.concat(coinName);
+    //use fuzzy library to handle fuzzy search
     let fuzzyResult = fuzzy
         .filter(inputValue, allStringsSearch, {})
         .map(result => {
             return result.string;
         });
+    //get coins for both searching symbol or full name
     let filteredCoins = _.pickBy(coinList, (result, symKey) => {
         let coinName = result.CoinName;
         return (_.includes(fuzzyResult, symKey) || _.includes(fuzzyResult, coinName));

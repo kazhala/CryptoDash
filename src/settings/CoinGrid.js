@@ -10,6 +10,8 @@ export const CoinGridStyled = styled.div`
     margin-top: 40px;
 `
 
+//lower section is all coins
+//display the first 100 results fected from api so that application is not overly sluggish
 export const getLowerSectionCoins = (coinList, filteredCoins) => {
     return (
         (filteredCoins && Object.keys(filteredCoins).slice(0, 100)) ||
@@ -17,12 +19,14 @@ export const getLowerSectionCoins = (coinList, filteredCoins) => {
     );
 }
 
+//top section is selected favorite coins
 export const getCoinsToDisplay = (coinList, topSection, favorites, filteredCoins) => {
     return (
         topSection ? favorites : getLowerSectionCoins(coinList, filteredCoins)
     );
 }
 
+//map then display all coins
 const CoinGrid = props => {
     const coinContext = useContext(AppContext);
     return (
