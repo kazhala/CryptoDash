@@ -11,6 +11,8 @@ Then run "npm start" to start the application.
 This app did not use class based componentes, router and redux.
 Instead, it's all built with functional componentes and context api.
 
+THE COTRIBUTION FOR THIS PROJECT IS A BIT OFF BECAUSE I FORGOT TO SET UP LOCAL GIT EMAIL....
+
 #Used lodash to handle complex array manipulation.
 
 #Used reactHighcharts to act as wrapper for highcharts.
