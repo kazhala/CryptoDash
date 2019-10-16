@@ -1,38 +1,23 @@
-<h1 align="center">Welcome to CryptoKAZ 👋</h1>
-<p>
-</p>
+This is a personal training project for the purpose of learning react data visualization and react-hooks.
+It is a web application that would display cryptocurrency's data and charts.
+You could view and try this app online at https://cryptokaz-ded65.web.app/.
 
-> A simple web app to display cryptocurrency's price data and charts.This is a personal training project for the purpose of learning react data visualization and react-hooks.
+I DID NOT set up a proxy server to handle CORS-Error. For some reason, firebase did not like cryptocompare api, so please don't run the app online and locally simultaneously.
 
-### ✨ [Demo](https://cryptokaz-ded65.web.app)
+It is built with creat-react-app.
+To run this app locally, run "npm install" after cloned.
+Then run "npm start" to start the application.
 
-## Install
+This app did not use class based componentes, router and redux.
+Instead, it's all built with functional componentes and context api.
 
-```sh
-npm install
-```
+#Used lodash to handle complex array manipulation.
 
-## Usage
+#Used reactHighcharts to act as wrapper for highcharts.
 
-```sh
-npm run start
-```
+#Used fuzzy to handle fuzzy search logic.
 
-## Run tests
+#Used moment to handle date calculation.
 
-```sh
-npm run test
-```
+Enjoy :)
 
-## Author
-
-👤 **Kevin Zhuang**
-
-* Github: [@KAZhala](https://github.com/KAZhala)
-
-## Show your support
-
-Give a ⭐️ if this project helped you!
-
-***
-_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
